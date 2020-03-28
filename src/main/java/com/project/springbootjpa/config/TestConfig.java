@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Profile;
 
 import com.project.springbootjpa.entities.Category;
 import com.project.springbootjpa.entities.Order;
+import com.project.springbootjpa.entities.OrderItem;
 import com.project.springbootjpa.entities.Product;
 import com.project.springbootjpa.entities.User;
 import com.project.springbootjpa.entities.enums.OrderStatus;
 import com.project.springbootjpa.repositories.CategoryRepository;
+import com.project.springbootjpa.repositories.OrderItemRepository;
 import com.project.springbootjpa.repositories.OrderRepository;
 import com.project.springbootjpa.repositories.ProductRepository;
 import com.project.springbootjpa.repositories.UserRepository;
@@ -34,6 +36,9 @@ public class TestConfig implements CommandLineRunner {
 	@Autowired
 	private ProductRepository productRepository;
 
+	@Autowired
+	private OrderItemRepository orderItemRepository;
+
 	@Override
 	public void run(String... args) throws Exception {
 
@@ -43,14 +48,6 @@ public class TestConfig implements CommandLineRunner {
 		User u3 = new User(null, "Danilson Sanches", "dsanches@gmail", "123456789", "teste123");
 		// salvar na tabela user
 		userRepository.saveAll(Arrays.asList(u1, u2, u3));
-		
-		// order
-		Order o1 = new Order(null, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.PAID, u1);
-		Order o2 = new Order(null, Instant.parse("2019-07-21T03:42:10Z"), OrderStatus.WAITING_PAYMENT, u2);
-		Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"), OrderStatus.SHIPPED, u1);
-		Order o4 = new Order(null, Instant.parse("2020-03-12T15:21:22Z"), OrderStatus.DELIVERED, u3);
-		// salvar na tabela order
-		orderRepository.saveAll(Arrays.asList(o1, o2, o3, o4));
 
 		// category
 		Category cat1 = new Category(null, "Electronics");
@@ -78,5 +75,20 @@ public class TestConfig implements CommandLineRunner {
 		// salvar os produtos novamento para ver as associações com categorias
 		productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
 
+		// order
+		Order o1 = new Order(null, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.PAID, u1);
+		Order o2 = new Order(null, Instant.parse("2019-07-21T03:42:10Z"), OrderStatus.WAITING_PAYMENT, u2);
+		Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"), OrderStatus.SHIPPED, u1);
+		Order o4 = new Order(null, Instant.parse("2020-03-12T15:21:22Z"), OrderStatus.DELIVERED, u3);
+		// salvar na tabela order
+		orderRepository.saveAll(Arrays.asList(o1, o2, o3, o4));
+
+		// order item
+		OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+		OrderItem oi2 = new OrderItem(o1, p3, 1, p3.getPrice());
+		OrderItem oi3 = new OrderItem(o2, p3, 2, p3.getPrice());
+		OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
+		// salvar na tabela order item
+		orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
 	}
 }
